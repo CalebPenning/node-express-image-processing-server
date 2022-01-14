@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const path = require('path')
 const multer = require('multer')
+const imageProcessor = require('./imageProcessor')
 
 
 const storage = multer.diskStorage({
@@ -21,11 +22,17 @@ router.get("/photo-viewer", (req, res) => {
     res.sendFile(photoPath)
 })
 
-router.post("/upload", upload.single("photo"), (req, res) => {
+router.post("/upload", upload.single("photo"), async (req, res) => {
     if (req.fileValidationError) {
         return res.status(400).json({ error: req.fileValidationError })
     }
-    return res.status(201).json({ success: true })
+    
+    else {
+        try {
+            await imageProcessor(req.file.filename)
+            return res.json({ success: true })
+        } catch(err) {}
+    }
 })
 
 function filename(req, file, cb) {
