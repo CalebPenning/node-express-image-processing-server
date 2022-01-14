@@ -30,7 +30,7 @@ router.post("/upload", upload.single("photo"), async (req, res) => {
     else {
         try {
             await imageProcessor(req.file.filename)
-            return res.json({ success: true })
+            return res.status(201).json({ success: true })
         } catch(err) {}
     }
 })
